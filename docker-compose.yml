@@ -1,0 +1,92 @@
+# Kippu local infrastructure. Services run from the IDE or Maven for now;
+# they join this file once they have Dockerfiles.
+# Credentials are for local development only. Never reuse them anywhere real.
+name: kippu
+
+x-postgres: &postgres
+  image: postgres:17-alpine
+  restart: unless-stopped
+  environment: &postgres-env
+    POSTGRES_USER: kippu
+    POSTGRES_PASSWORD: kippu_dev
+
+services:
+  catalog-db:
+    <<: *postgres
+    environment:
+      <<: *postgres-env
+      POSTGRES_DB: catalog
+    ports: ["15433:5432"]
+    volumes: ["catalog-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kippu -d catalog"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  seat-db:
+    <<: *postgres
+    environment:
+      <<: *postgres-env
+      POSTGRES_DB: seats
+    ports: ["15434:5432"]
+    volumes: ["seat-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kippu -d seats"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  booking-db:
+    <<: *postgres
+    environment:
+      <<: *postgres-env
+      POSTGRES_DB: booking
+    ports: ["15435:5432"]
+    volumes: ["booking-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kippu -d booking"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  payment-db:
+    <<: *postgres
+    environment:
+      <<: *postgres-env
+      POSTGRES_DB: payment
+    ports: ["15436:5432"]
+    volumes: ["payment-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kippu -d payment"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: kippu
+      RABBITMQ_DEFAULT_PASS: kippu_dev
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # management UI
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"     # SMTP
+      - "8025:8025"     # web inbox
+
+volumes:
+  catalog-data:
+  seat-data:
+  booking-data:
+  payment-data:

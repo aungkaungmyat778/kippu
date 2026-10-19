@@ -1,0 +1,12 @@
+# build output
+target/
+*.class
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# local secrets: never commit real credentials
+.env
