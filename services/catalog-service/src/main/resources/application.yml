@@ -22,3 +22,10 @@ management:
     web:
       exposure:
         include: health,info
+
+kippu:
+  timezone: Asia/Tokyo
+  generation:
+    horizon-days: 30
+    cron: "0 0 2 * * *"   # every night at 02:00, service time zone
+    run-on-startup: true
