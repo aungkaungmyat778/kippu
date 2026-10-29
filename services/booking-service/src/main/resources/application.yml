@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: booking-service
+  datasource:
+    url: jdbc:postgresql://localhost:15435/booking
+    username: kippu
+    password: kippu_dev
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+
+server:
+  port: 8083
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+kippu:
+  timezone: Asia/Tokyo
+  catalog:
+    base-url: http://localhost:8081
+  seats:
+    base-url: http://localhost:8082
+  payment:
+    base-url: http://localhost:8084
+  booking:
+    cutoff-minutes: 30        # sales close this long before departure
+    max-seats-per-booking: 4

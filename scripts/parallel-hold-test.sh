@@ -49,8 +49,8 @@ RESULTS=$(seq 1 "$PARALLEL" | xargs -n1 -P "$PARALLEL" bash -c '
   ID=$(new_uuid)
   curl -s -o /dev/null -w "%{http_code}\n" -X POST "$SEATS/trips/$TRIP_ID/holds" \
        -H "Content-Type: application/json" \
-       -d "{\"bookingId\":\"$ID\",\"seatNos\":[\"$SEAT\"]}"
-' _ | sort | uniq -c)
+       -d "{\"bookingId\":\"$ID\",\"seatNos\":[\"$SEAT\"]}" || true
+' _ | sort | uniq -c) || true
 
 echo "$RESULTS"
 echo
