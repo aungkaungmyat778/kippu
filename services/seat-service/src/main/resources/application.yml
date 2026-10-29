@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: seat-service
+  datasource:
+    url: jdbc:postgresql://localhost:15434/seats
+    username: kippu
+    password: kippu_dev
+  jpa:
+    open-in-view: false
+    hibernate:
+      # Flyway owns the schema. Hibernate only checks that entities match it.
+      ddl-auto: validate
+  flyway:
+    enabled: true
+
+server:
+  port: 8082
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+kippu:
+  catalog:
+    base-url: http://localhost:8081
+  seats:
+    hold-minutes: 10
+    max-seats-per-hold: 4        # safety net, the Booking service enforces the real rule
+    sweep-interval-ms: 30000     # how often expired holds are released

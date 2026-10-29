@@ -14,5 +14,6 @@
 
   <modules>
     <module>services/catalog-service</module>
+    <module>services/seat-service</module>
   </modules>
 </project>
